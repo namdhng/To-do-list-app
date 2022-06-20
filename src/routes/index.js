@@ -14,6 +14,7 @@ const api = new class {
             const id = uuidv4();
             const taskInfo = req.body;
             console.log(taskInfo);
+            console.log(taskInfo);
             const newTask = {'id': id, ...taskInfo};
             console.log(this.readFile());
             this.readFile().push(newTask);
