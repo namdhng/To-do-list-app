@@ -4,6 +4,7 @@ module.exports = new class {
     }
 
     insert() {
+        console.log('test pull')
         // const id = uuidv4();
         // const taskInfo = req.body;
         // console.log(taskInfo);
