@@ -1,5 +1,5 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('uuid');
 const controller = require("../controllers/todoController");
 const fs = require('fs');
 
@@ -13,11 +13,11 @@ const api = new class {
         this.router.post('/', (req, res) => {
             const id = uuidv4();
             const taskInfo = req.body;
-            console.log(taskInfo);
-            console.log(taskInfo);
             const newTask = {'id': id, ...taskInfo};
-            console.log(this.readFile());
-            this.readFile().push(newTask);
+            let allTasks = this.readFile();
+            allTasks.push(newTask);
+            console.log(allTasks);
+            this.writeFile(allTasks);
             // let id = this.controller.create();
             res.send(`Task with ID ${id} added`);
         })
@@ -25,17 +25,27 @@ const api = new class {
 
     read() {
         this.router.get('/', (req, res) => {
-            // const id = req.params.id;
-            // const userData = users.find((user) => user.id == id);
-            res.send(this.readFile());
+            let allTasks = this.readFile();
+            // if (!req.params.id) {
+            //     console.log("here");
+                res.send(allTasks);
+            // } else {
+            //     console.log("there");
+            //     const id = req.params.id;
+            //     const specifiedTasks = allTasks.find((task) => task.id == id);
+            //     res.send(specifiedTasks);
+            // }
         })
     }
 
     update() {
-        this.router.patch('/', (req, res) => {
-            const {id} = req.params;
+        this.router.patch('/:id', (req, res) => {
+            let allTasks = this.readFile();
+            const id = req.params.id;
             const {title, description} = req.body;
-            let modifiedTask = this.readFile().find((user) => user.id == id);
+            let modifiedTask = allTasks.find((task) => task.id == id);
+            console.log(id);
+            console.log(modifiedTask);
             console.log(req.body);
             if (title) {
                 modifiedTask[title] = title;
@@ -49,9 +59,11 @@ const api = new class {
 
     delete() {
         this.router.delete('/:id', (req, res) => {
-            let tasks = this.readFile();
+            let allTasks = this.readFile();
+            console.log(req.params.id);
             const id = req.params.id;
-            const updatedToDos = tasks.filter((task) => task.id !== id.toString());
+            console.log(id);
+            const updatedToDos = allTasks.filter((task) => task.id !== id);
             console.log(updatedToDos);
             res.send(updatedToDos);
         })
@@ -59,20 +71,32 @@ const api = new class {
 
     readFile() {
         // let users = [];
-        var data = fs.readFileSync('C:/Users/User/Desktop/FPT Proj/data.json', (err, data) => {
+        const dataPath = 'C:/Users/User/Desktop/FPT Proj/data.json';
+        let data = fs.readFileSync(dataPath, (err, data) => {
             if (err) throw err;
             // console.log(JSON.parse(data));
             // const database = JSON.parse(data);
             // users = users.concat(database);
             // users.forEach(obj => {
-                //     console.log(`${  obj.id}: ${obj.title}`);
-                //     });
+            //         console.log(`${  obj.id}: ${obj.title}`);
+            //         });
             });
             // console.log(data);
             
             return JSON.parse(data);
-        // return data;
     }
+
+    writeFile(data) {
+        const dataPath = 'C:/Users/User/Desktop/FPT Proj/data.json';
+
+        fs.writeFile(dataPath, JSON.stringify(data), (err) => {
+            if (err) throw err;
+            console.log("File written successfully\n");
+            console.log("The written has the following contents:");
+            console.log(fs.readFileSync(dataPath, "utf8"));
+          });
+    }
+
     proceed() {
         this.create();
         this.read();
@@ -80,8 +104,6 @@ const api = new class {
         this.delete();
     }
 }(express.Router());
-
-
 
 api.proceed();
 module.exports = api.router;
