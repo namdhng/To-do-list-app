@@ -1,4 +1,3 @@
-const client = require('./connection'); 
 const express = require("express");
 const app = express();
 const port = 8000;
@@ -19,11 +18,11 @@ userModel.hasMany(taskModel);
 
 sequelize
   .sync({force: true})
-  .then((result) => {
-    return userModel.bulkCreate([{ name: 'Nam', email: 'hungnama3ll@gmail.com' }, 
-                                { name: 'Pom', email: 'thisispomelodao@gmail.com' }], 
-                                { returning: true });
-  })
+  // .then((result) => {
+  //   return userModel.bulkCreate([{ name: 'Nam', email: 'hungnama3ll@gmail.com' }, 
+  //                               { name: 'Pom', email: 'thisispomelodao@gmail.com' }], 
+  //                               { returning: true });
+  // })
   // .then((result) => {
   //   const addedTasks = [{ task: 'homework', deadline: 2022-06-30, check: false },
   //   { task: 'assessment test', deadline: 2022-06-28, check: true }];
@@ -48,4 +47,3 @@ app.listen(port, () => {
     console.log(`Listening to requests on http://localhost:${port}`);
   });
 
-// client.connect();
