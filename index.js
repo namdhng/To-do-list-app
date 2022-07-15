@@ -2,19 +2,22 @@ const express = require("express");
 const app = express();
 const port = 8000;
 const parser = require('body-parser');
-const toDoList = require("./src/routes");
+const taskRoute = require('./src/routes/taskRoute');
+const userRoute = require('./src/routes/userRoute')
 const morgan = require('morgan');
 
 const sequelize = require('./database');
-const taskModel = require('./models/task');
-const userModel = require('./models/user');
+const taskModel = require('./src/models/taskModel');
+const userModel = require('./src/models/userModel');
 
 app.use(parser.json());
 app.use(parser.urlencoded({extended: false}));
-app.use("/", toDoList);
+app.use('/', taskRoute);
+app.use('/', userRoute)
 app.use(morgan());
 
 userModel.hasMany(taskModel);
+taskModel.belongsTo(userModel);
 
 sequelize
   .sync({force: true})

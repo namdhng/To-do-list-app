@@ -1,4 +1,4 @@
-const sequelize = require('../database');
+const sequelize = require('../../database');
 const Sequelize = require('Sequelize')
 
 const taskModel = sequelize.define('task', {
@@ -8,10 +8,8 @@ const taskModel = sequelize.define('task', {
     { type: Sequelize.STRING, allowNull: false },
     deadline:
     { type: Sequelize.DATE, allowNull: false },
-    check:
-    { type: Sequelize.BOOLEAN, allowNull: false }
-    // userId:
-    // { type: Sequelize.INTEGER, allowNull: false }
+    status:
+    { type: Sequelize.STRING, allowNull: false }
   });
 
 module.exports = taskModel;
